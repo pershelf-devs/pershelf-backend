@@ -6,6 +6,7 @@ import (
 
 	"github.com/buaazp/fasthttprouter"
 	config2 "github.com/pershelf/pershelf/config/server"
+	"github.com/pershelf/pershelf/endpoint/handlers"
 	"github.com/pershelf/pershelf/globals"
 	"github.com/valyala/fasthttp"
 )
@@ -20,6 +21,13 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/test", func(ctx *fasthttp.RequestCtx) {
 		globals.Log("Test endpoint hit successfully")
 	})
+
+	// users handlers (CRUD) => table : users
+	router.POST(dbApiMainPath+"/users/get/all", handlers.GetAllUsersHandler)      // get all users
+	router.POST(dbApiMainPath+"/users/get/id/:id", handlers.GetUserByIDHandler)   // get user by id
+	router.POST(dbApiMainPath+"/users/create", handlers.CreateUserHandler)        // create user
+	router.POST(dbApiMainPath+"/users/update", handlers.UpdateUserHandler)        // update user
+	router.POST(dbApiMainPath+"/users/delete/id/:id", handlers.DeleteUserHandler) // delete user by id
 
 	srv := &fasthttp.Server{
 		Handler: router.Handler,
