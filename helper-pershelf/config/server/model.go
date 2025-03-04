@@ -2,5 +2,5 @@ package config
 
 // ServerConfig a struct to use in decoding the server configurations
 type ServerConfig struct {
-	Port string `json:"port"`
+	Port string `json:"helperPort"`
 }

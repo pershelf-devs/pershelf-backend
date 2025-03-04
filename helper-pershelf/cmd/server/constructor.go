@@ -31,12 +31,12 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	// set the write buffer size to 10000
 	srv.WriteBufferSize = 10000
 
-	log.Printf("Server started listening on port :  %d", conf.Port)
-	if err := srv.ListenAndServe(fmt.Sprintf(":%d", conf.Port)); err != nil {
+	log.Printf("Server started listening on port :  %s", conf.Port)
+	if err := srv.ListenAndServe(fmt.Sprintf(":%s", conf.Port)); err != nil {
 		globals.Log("Error starting the server: ", err)
 		return err
 	}
-	log.Printf("Server stopped listening on port :  %d", conf.Port)
+	log.Printf("Server stopped listening on port :  %s", conf.Port)
 
 	return nil
 }
