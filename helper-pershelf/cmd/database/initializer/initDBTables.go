@@ -13,5 +13,11 @@ func InitializeTables() error {
 		return err
 	}
 
+	// refresh_tokens
+	if err := globals.PershelfDB.AutoMigrate(&crud.RefreshToken{}); err != nil {
+		globals.Log("Error initializing tables: ", err)
+		return err
+	}
+
 	return nil
 }
