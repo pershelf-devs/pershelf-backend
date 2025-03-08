@@ -19,5 +19,11 @@ func InitializeTables() error {
 		return err
 	}
 
+	// user_book
+	if err := globals.PershelfDB.AutoMigrate(&crud.UserBook{}); err != nil {
+		globals.Log("Error initializing tables: ", err)
+		return err
+	}
+
 	return nil
 }
