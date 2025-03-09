@@ -11,3 +11,23 @@ type UsersResp struct {
 	Status ResponseMessage `json:"status"`
 	Users  []crud.User     `json:"users"`
 }
+
+type RefreshTokensResp struct {
+	Status        ResponseMessage     `json:"status"`
+	RefreshTokens []crud.RefreshToken `json:"refreshTokens"`
+}
+
+type UserBooksResp struct {
+	Status    ResponseMessage `json:"status"`
+	UserBooks []crud.UserBook `json:"userBooks"`
+}
+
+type ReviewsResp struct {
+	Status  ResponseMessage `json:"status"`
+	Reviews []crud.Review   `json:"reviews"`
+}
+
+type BooksResp struct {
+	Status ResponseMessage `json:"status"`
+	Books  []crud.Book     `json:"books"`
+}

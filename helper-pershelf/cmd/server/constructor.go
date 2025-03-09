@@ -29,6 +29,40 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/users/update", handlers.UpdateUserHandler)        // update user
 	router.POST(dbApiMainPath+"/users/delete/id/:id", handlers.DeleteUserHandler) // delete user by id
 
+	// refresh tokens handlers (CRUD) => table : refresh tokens
+	router.POST(dbApiMainPath+"/refresh-tokens/get/all", handlers.GetAllRefreshTokensHandler)                  // get all refresh tokens
+	router.POST(dbApiMainPath+"/refresh-tokens/get/id/:id", handlers.GetRefreshTokenByIDHandler)               // get refresh token by id
+	router.POST(dbApiMainPath+"/refresh-tokens/get/user-id/:user-id", handlers.GetRefreshTokenByUserIDHandler) // get refresh token by id
+	router.POST(dbApiMainPath+"/refresh-tokens/create", handlers.CreateRefreshTokenHandler)                    // create refresh token
+	router.POST(dbApiMainPath+"/refresh-tokens/update", handlers.UpdateRefreshTokenHandler)                    // update refresh token
+	router.POST(dbApiMainPath+"/refresh-tokens/delete/id/:id", handlers.DeleteRefreshTokenHandler)             // delete refresh token by id
+
+	// user_book handlers (CRUD) => table : user_book
+	router.POST(dbApiMainPath+"/user-books/get/all", handlers.GetAllUserBooksHandler)                   // get all user books
+	router.POST(dbApiMainPath+"/user-books/get/id/:id", handlers.GetUserBookByIDHandler)                // get user book by id
+	router.POST(dbApiMainPath+"/user-books/get/user-id/:user-id", handlers.GetUserBooksByUserIDHandler) // get user books by user id
+	router.POST(dbApiMainPath+"/user-books/get/book-id/:book-id", handlers.GetUserBooksByBookIDHandler) // get user books by book id
+	router.POST(dbApiMainPath+"/user-books/create", handlers.CreateUserBookHandler)                     // create user book entry
+	router.POST(dbApiMainPath+"/user-books/update", handlers.UpdateUserBookHandler)                     // update user book entry
+	router.POST(dbApiMainPath+"/user-books/delete/id/:id", handlers.DeleteUserBookHandler)              // delete user book entry by id
+
+	// review handlers (CRUD) => table : review
+	router.POST(dbApiMainPath+"/reviews/get/all", handlers.GetAllReviewsHandler)                   // get all reviews
+	router.POST(dbApiMainPath+"/reviews/get/id/:id", handlers.GetReviewByIDHandler)                // get review by id
+	router.POST(dbApiMainPath+"/reviews/get/user-id/:user-id", handlers.GetReviewsByUserIDHandler) // get reviews by user id
+	router.POST(dbApiMainPath+"/reviews/get/book-id/:book-id", handlers.GetReviewsByBookIDHandler) // get reviews by book id
+	router.POST(dbApiMainPath+"/reviews/create", handlers.CreateReviewHandler)                     // create review entry
+	router.POST(dbApiMainPath+"/reviews/update", handlers.UpdateReviewHandler)                     // update review entry
+	router.POST(dbApiMainPath+"/reviews/delete/id/:id", handlers.DeleteReviewHandler)              // delete review entry by id
+
+	// book handlers (CRUD) => table : book
+	router.POST(dbApiMainPath+"/books/get/all", handlers.GetAllBooksHandler)          // get all books
+	router.POST(dbApiMainPath+"/books/get/id/:id", handlers.GetBookByIDHandler)       // get book by id
+	router.POST(dbApiMainPath+"/books/get/isbn/:isbn", handlers.GetBookByISBNHandler) // get book by ISBN
+	router.POST(dbApiMainPath+"/books/create", handlers.CreateBookHandler)            // create book
+	router.POST(dbApiMainPath+"/books/update", handlers.UpdateBookHandler)            // update book
+	router.POST(dbApiMainPath+"/books/delete/id/:id", handlers.DeleteBookHandler)     // delete book by id
+
 	srv := &fasthttp.Server{
 		Handler: router.Handler,
 	}
