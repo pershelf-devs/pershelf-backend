@@ -55,6 +55,14 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/reviews/update", handlers.UpdateReviewHandler)                     // update review entry
 	router.POST(dbApiMainPath+"/reviews/delete/id/:id", handlers.DeleteReviewHandler)              // delete review entry by id
 
+	// book handlers (CRUD) => table : book
+	router.POST(dbApiMainPath+"/books/get/all", handlers.GetAllBooksHandler)          // get all books
+	router.POST(dbApiMainPath+"/books/get/id/:id", handlers.GetBookByIDHandler)       // get book by id
+	router.POST(dbApiMainPath+"/books/get/isbn/:isbn", handlers.GetBookByISBNHandler) // get book by ISBN
+	router.POST(dbApiMainPath+"/books/create", handlers.CreateBookHandler)            // create book
+	router.POST(dbApiMainPath+"/books/update", handlers.UpdateBookHandler)            // update book
+	router.POST(dbApiMainPath+"/books/delete/id/:id", handlers.DeleteBookHandler)     // delete book by id
+
 	srv := &fasthttp.Server{
 		Handler: router.Handler,
 	}

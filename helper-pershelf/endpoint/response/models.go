@@ -19,10 +19,15 @@ type RefreshTokensResp struct {
 
 type UserBooksResp struct {
 	Status    ResponseMessage `json:"status"`
-	UserBooks []crud.UserBook `json:"refreshTokens"`
+	UserBooks []crud.UserBook `json:"userBooks"`
 }
 
 type ReviewsResp struct {
 	Status  ResponseMessage `json:"status"`
-	Reviews []crud.Review   `json:"status"`
+	Reviews []crud.Review   `json:"reviews"`
+}
+
+type BooksResp struct {
+	Status ResponseMessage `json:"status"`
+	Books  []crud.Book     `json:"books"`
 }
