@@ -63,6 +63,33 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/books/update", handlers.UpdateBookHandler)            // update book
 	router.POST(dbApiMainPath+"/books/delete/id/:id", handlers.DeleteBookHandler)     // delete book by id
 
+	// shelf_book handlers (CRUD) => table : shelf_book
+	router.POST(dbApiMainPath+"/shelf-books/get/all", handlers.GetAllShelfBooksHandler)
+	router.POST(dbApiMainPath+"/shelf-books/get/id/:id", handlers.GetShelfBookByIDHandler)
+	router.POST(dbApiMainPath+"/shelf-books/create", handlers.CreateShelfBookHandler)
+	router.POST(dbApiMainPath+"/shelf-books/delete/id/:id", handlers.DeleteShelfBookHandler)
+
+	// user_shelf handlers (CRUD) => table : user_shelf
+	router.POST(dbApiMainPath+"/user-shelves/get/all", handlers.GetAllUserShelvesHandler)
+	router.POST(dbApiMainPath+"/user-shelves/get/id/:id", handlers.GetUserShelfByIDHandler)
+	router.POST(dbApiMainPath+"/user-shelves/create", handlers.CreateUserShelfHandler)
+	router.POST(dbApiMainPath+"/user-shelves/update", handlers.UpdateUserShelfHandler)
+	router.POST(dbApiMainPath+"/user-shelves/delete/id/:id", handlers.DeleteUserShelfHandler)
+
+	// follow handlers (CRUD) => table : follow
+	router.POST(dbApiMainPath+"/follows/get/all", handlers.GetAllFollowsHandler)
+	router.POST(dbApiMainPath+"/follows/get/id/:id", handlers.GetFollowByIDHandler)
+	router.POST(dbApiMainPath+"/follows/create", handlers.CreateFollowHandler)
+	router.POST(dbApiMainPath+"/follows/update", handlers.UpdateFollowHandler)
+	router.POST(dbApiMainPath+"/follows/delete/id/:id", handlers.DeleteFollowHandler)
+
+	// comment handlers (CRUD) => table : comment
+	router.POST(dbApiMainPath+"/comments/get/all", handlers.GetAllCommentsHandler)
+	router.POST(dbApiMainPath+"/comments/get/id/:id", handlers.GetCommentByIDHandler)
+	router.POST(dbApiMainPath+"/comments/create", handlers.CreateCommentHandler)
+	router.POST(dbApiMainPath+"/comments/update", handlers.UpdateCommentHandler)
+	router.POST(dbApiMainPath+"/comments/delete/id/:id", handlers.DeleteCommentHandler)
+
 	srv := &fasthttp.Server{
 		Handler: router.Handler,
 	}
