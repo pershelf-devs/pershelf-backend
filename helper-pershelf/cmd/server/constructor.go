@@ -70,11 +70,11 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/shelf-books/delete/id/:id", handlers.DeleteShelfBookHandler)
 
 	// user_shelf handlers (CRUD) => table : user_shelf
-	router.POST(dbApiMainPath+"/user-shelves/get/all", handlers.GetAllUserShelvesHandler)
-	router.POST(dbApiMainPath+"/user-shelves/get/id/:id", handlers.GetUserShelfByIDHandler)
-	router.POST(dbApiMainPath+"/user-shelves/create", handlers.CreateUserShelfHandler)
-	router.POST(dbApiMainPath+"/user-shelves/update", handlers.UpdateUserShelfHandler)
-	router.POST(dbApiMainPath+"/user-shelves/delete/id/:id", handlers.DeleteUserShelfHandler)
+	router.POST(dbApiMainPath+"/user-shelfs/get/all", handlers.GetAllUserShelfsHandler)
+	router.POST(dbApiMainPath+"/user-shelfs/get/id/:id", handlers.GetUserShelfByIDHandler)
+	router.POST(dbApiMainPath+"/user-shelfs/create", handlers.CreateUserShelfHandler)
+	router.POST(dbApiMainPath+"/user-shelfs/update", handlers.UpdateUserShelfHandler)
+	router.POST(dbApiMainPath+"/user-shelfs/delete/id/:id", handlers.DeleteUserShelfHandler)
 
 	// follow handlers (CRUD) => table : follow
 	router.POST(dbApiMainPath+"/follows/get/all", handlers.GetAllFollowsHandler)

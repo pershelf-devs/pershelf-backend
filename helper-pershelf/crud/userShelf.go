@@ -20,14 +20,14 @@ func (UserShelf) TableName() string {
 	return "user_shelf"
 }
 
-// GetAllUserShelves retrieves all user_shelf entries from the database
-func GetAllUserShelves() []UserShelf {
-	var userShelves []UserShelf
-	if err := globals.PershelfDB.Find(&userShelves).Error; err != nil {
-		globals.Log("Error getting all user_shelves: ", err)
+// GetAllUserShelfs retrieves all user_shelf entries from the database
+func GetAllUserShelfs() []UserShelf {
+	var userShelfs []UserShelf
+	if err := globals.PershelfDB.Find(&userShelfs).Error; err != nil {
+		globals.Log("Error getting all user_shelfs: ", err)
 		return nil
 	}
-	return userShelves
+	return userShelfs
 }
 
 // GetUserShelfByID retrieves a user_shelf by ID from the database
@@ -40,14 +40,14 @@ func GetUserShelfByID(id int) UserShelf {
 	return userShelf
 }
 
-// GetUserShelvesByUserID retrieves all shelves belonging to a specific user
-func GetUserShelvesByUserID(userID int) []UserShelf {
-	var userShelves []UserShelf
-	if err := globals.PershelfDB.Where("user_id = ?", userID).Find(&userShelves).Error; err != nil {
-		globals.Log("Error getting user_shelves by user ID: ", err)
+// GetUserShelfsByUserID retrieves all shelves belonging to a specific user
+func GetUserShelfsByUserID(userID int) []UserShelf {
+	var userShelfs []UserShelf
+	if err := globals.PershelfDB.Where("user_id = ?", userID).Find(&userShelfs).Error; err != nil {
+		globals.Log("Error getting user_shelfs by user ID: ", err)
 		return nil
 	}
-	return userShelves
+	return userShelfs
 }
 
 // CreateUserShelf creates a new user_shelf entry in the database

@@ -10,20 +10,20 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-// GetAllUserShelvesHandler retrieves all user_shelf entries from the database.
-func GetAllUserShelvesHandler(ctx *fasthttp.RequestCtx) {
-	var userShelves []crud.UserShelf
-	if userShelves = crud.GetAllUserShelves(); userShelves == nil {
-		log.Printf("(Error): error retrieving user_shelves list at endpoint (%s).", string(ctx.Path()))
+// GetAllUserShelfsHandler retrieves all user_shelf entries from the database.
+func GetAllUserShelfsHandler(ctx *fasthttp.RequestCtx) {
+	var userShelfs []crud.UserShelf
+	if userShelfs = crud.GetAllUserShelfs(); userShelfs == nil {
+		log.Printf("(Error): error retrieving user_shelfs list at endpoint (%s).", string(ctx.Path()))
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		return
 	}
 
-	log.Printf("(Information): user_shelves list retrieved successfully.")
+	log.Printf("(Information): user_shelfs list retrieved successfully.")
 	ctx.SetStatusCode(fasthttp.StatusOK)
-	if err := json.NewEncoder(ctx).Encode(response.UserShelvesResp{
-		Status:      response.ResponseMessage{Code: "0", Values: nil},
-		UserShelves: userShelves,
+	if err := json.NewEncoder(ctx).Encode(response.UserShelfsResp{
+		Status:     response.ResponseMessage{Code: "0", Values: nil},
+		UserShelfs: userShelfs,
 	}); err != nil {
 		log.Printf("(Error): error encoding response message at endpoint (%s).", string(ctx.Path()))
 	}
