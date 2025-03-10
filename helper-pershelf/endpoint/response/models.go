@@ -31,3 +31,23 @@ type BooksResp struct {
 	Status ResponseMessage `json:"status"`
 	Books  []crud.Book     `json:"books"`
 }
+
+type ShelfBooksResp struct {
+	Status     ResponseMessage  `json:"status"`
+	ShelfBooks []crud.ShelfBook `json:"shelfBooks"`
+}
+
+type UserShelfsResp struct {
+	Status     ResponseMessage  `json:"status"`
+	UserShelfs []crud.UserShelf `json:"userShelfs"`
+}
+
+type FollowsResp struct {
+	Status  ResponseMessage `json:"status"`
+	Follows []crud.Follow   `json:"follows"`
+}
+
+type CommentsResp struct {
+	Status   ResponseMessage `json:"status"`
+	Comments []crud.Comment  `json:"comments"`
+}
