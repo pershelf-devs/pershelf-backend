@@ -3,6 +3,7 @@ package constructor
 import (
 	"log"
 
+	"github.com/core-pershelf/endpoints/handlers/auth"
 	"github.com/core-pershelf/endpoints/handlers/test"
 	"github.com/valyala/fasthttp"
 )
@@ -27,6 +28,9 @@ func MainHandler(ctx *fasthttp.RequestCtx) {
 
 	case "/test":
 		test.ExecuteTestHandler(ctx)
+
+	case "/login":
+		auth.ClassicAuthHandler(ctx)
 
 	default:
 		log.Printf("Endpoint (%s) not found.", pth)
