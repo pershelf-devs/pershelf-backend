@@ -23,11 +23,12 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	})
 
 	// users handlers (CRUD) => table : users
-	router.POST(dbApiMainPath+"/users/get/all", handlers.GetAllUsersHandler)      // get all users
-	router.POST(dbApiMainPath+"/users/get/id/:id", handlers.GetUserByIDHandler)   // get user by id
-	router.POST(dbApiMainPath+"/users/create", handlers.CreateUserHandler)        // create user
-	router.POST(dbApiMainPath+"/users/update", handlers.UpdateUserHandler)        // update user
-	router.POST(dbApiMainPath+"/users/delete/id/:id", handlers.DeleteUserHandler) // delete user by id
+	router.POST(dbApiMainPath+"/users/get/all", handlers.GetAllUsersHandler)             // get all users
+	router.POST(dbApiMainPath+"/users/get/id/:id", handlers.GetUserByIDHandler)          // get user by id
+	router.POST(dbApiMainPath+"/users/get/email/:email", handlers.GetUserByEmailHandler) // get user by email
+	router.POST(dbApiMainPath+"/users/create", handlers.CreateUserHandler)               // create user
+	router.POST(dbApiMainPath+"/users/update", handlers.UpdateUserHandler)               // update user
+	router.POST(dbApiMainPath+"/users/delete/id/:id", handlers.DeleteUserHandler)        // delete user by id
 
 	// refresh tokens handlers (CRUD) => table : refresh tokens
 	router.POST(dbApiMainPath+"/refresh-tokens/get/all", handlers.GetAllRefreshTokensHandler)                  // get all refresh tokens

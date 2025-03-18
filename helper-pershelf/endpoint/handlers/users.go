@@ -73,6 +73,44 @@ func GetUserByIDHandler(ctx *fasthttp.RequestCtx) {
 	}
 }
 
+// GetUserByEmailHandler retrieves a user by email from the database and sends them in a response to client's request.
+func GetUserByEmailHandler(ctx *fasthttp.RequestCtx) {
+	var (
+		pth   = ctx.Path()
+		email = ctx.UserValue("email").(string)
+		user  crud.User
+	)
+
+	if err := json.Unmarshal(ctx.Request.Body(), &user); err != nil {
+		log.Printf("(Error): error unmarshalling request body at endpoint (%s): %v", pth, err)
+		if err := json.NewEncoder(ctx).Encode(response.UsersResp{Status: response.ResponseMessage{Code: "3", Values: nil}}); err != nil {
+			log.Printf("Error encoding response for endpoint (%s): %v", pth, err)
+		}
+		return
+	}
+
+	if user.Email == "" {
+		log.Printf("(Error): error retrieving user by email at endpoint (%s).", string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.UsersResp{Status: response.ResponseMessage{Code: "3", Values: nil}}); err != nil {
+			log.Printf("Error encoding response for endpoint (%s): %v", pth, err)
+		}
+		return
+	}
+
+	if user = crud.GetUserByEmail(email); user.ID == 0 {
+		log.Printf("(Error): error retrieving user by email at endpoint (%s).", string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.UsersResp{Status: response.ResponseMessage{Code: "3", Values: nil}}); err != nil {
+			log.Printf("Error encoding response for endpoint (%s): %v", pth, err)
+		}
+		return
+	}
+
+	log.Printf("(Information): user retrieved successfully.")
+	if err := json.NewEncoder(ctx).Encode(response.UsersResp{Status: response.ResponseMessage{Code: "0", Values: nil}}); err != nil {
+		log.Printf("Error encoding response for endpoint (%s): %v", pth, err)
+	}
+}
+
 // CreateUserHandler creates a new user in the database and sends them in a response to client's request.
 func CreateUserHandler(ctx *fasthttp.RequestCtx) {
 	var (

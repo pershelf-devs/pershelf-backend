@@ -63,6 +63,16 @@ func GetUserByID(id int) User {
 	return user
 }
 
+// GetUserByEmail gets a user by email from the database
+func GetUserByEmail(email string) User {
+	var user User
+	if err := globals.PershelfDB.Where("email = ?", email).First(&user).Error; err != nil {
+		globals.Log("Error getting user by email: ", err)
+		return User{}
+	}
+	return user
+}
+
 // CreateUser creates a new user in the database
 func CreateUser(user *User) User {
 	if err := globals.PershelfDB.Create(&user).Error; err != nil {
