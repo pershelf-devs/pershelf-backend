@@ -1,4 +1,4 @@
-package config
+package database
 
 // DBConnectionConfig a struct to use in decoding the database-connection configurations
 type DBConnectionConfig struct {
