@@ -23,13 +23,16 @@ func ConstructServer() *fasthttp.Server {
 
 // MainHandler is the main handler for the fasthttp server.
 func MainHandler(ctx *fasthttp.RequestCtx) {
+	const (
+		apiPathHeader = "/restapi/v1.0"
+	)
 
 	switch pth := string(ctx.Path()); pth {
 
 	case "/test":
 		test.ExecuteTestHandler(ctx)
 
-	case "/login":
+	case apiPathHeader + "/auth/login":
 		auth.ClassicAuthHandler(ctx)
 
 	default:
