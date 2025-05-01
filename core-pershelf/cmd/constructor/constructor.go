@@ -34,6 +34,8 @@ func MainHandler(ctx *fasthttp.RequestCtx) {
 
 	case apiPathHeader + "/auth/login":
 		auth.ClassicAuthHandler(ctx)
+	case apiPathHeader + "/auth/register":
+		auth.UserRegisterHandler(ctx)
 
 	default:
 		log.Printf("Endpoint (%s) not found.", pth)

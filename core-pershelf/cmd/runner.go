@@ -6,6 +6,8 @@ import (
 
 	"github.com/core-pershelf/cmd/constructor"
 	"github.com/core-pershelf/cmd/starter"
+	"github.com/core-pershelf/globals"
+	"github.com/core-pershelf/mongo"
 )
 
 var (
@@ -18,6 +20,15 @@ func Run() {
 
 	// Initialize log file
 	initLogFile(logFilePath)
+
+	// connect to mongo
+	err := mongo.ConnectMongoDB()
+	if err != nil {
+		log.Fatalf("(Error) : error connecting to mongo : %v", err)
+	}
+
+	// Initialize MongoDB collections
+	globals.InitCollections()
 
 	// start the server
 	starter.StartServer(srv)

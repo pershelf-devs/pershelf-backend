@@ -1,16 +1,20 @@
 package auth
 
 import (
+	"context"
 	"crypto/md5"
 	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
+	"github.com/core-pershelf/globals"
 	"github.com/core-pershelf/jwt"
-	helperContact "github.com/core-pershelf/rest/helperContact/request"
 	"github.com/core-pershelf/rest/helperContact/response"
 	"github.com/core-pershelf/rest/helperContact/tablesModels"
 	"github.com/valyala/fasthttp"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func ClassicAuthHandler(ctx *fasthttp.RequestCtx) {
@@ -40,37 +44,24 @@ func ClassicAuthHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	// Get user by email
-	jsonData, err := helperContact.HelperRequest("/users/get/email/"+receivedCreds.Email, nil)
+	// Find the user from Mongo db
+	var user tablesModels.User
+	filter := bson.M{"email": receivedCreds.Email}
+	err := globals.UsersCollection.FindOne(context.Background(), filter).Decode(&user)
 	if err != nil {
-		log.Printf("Error getting user by email: %v", err)
+		if err == mongo.ErrNoDocuments {
+			log.Printf("User with email (%s) not found", receivedCreds.Email)
+			if err = json.NewEncoder(ctx).Encode(response.ResponseMessage{
+				Code:   "10",
+				Values: []string{receivedCreds.Email},
+			}); err != nil {
+				log.Printf("Error encoding response message: %v", err)
+			}
+			return
+		}
+		log.Printf("Error finding user: %v", err)
 		if err = json.NewEncoder(ctx).Encode(response.ResponseMessage{
 			Code:   "3",
-			Values: []string{receivedCreds.Email},
-		}); err != nil {
-			log.Printf("Error encoding response message: %v", err)
-		}
-		return
-	}
-
-	// Unmarshal the response
-	var usersResp response.UsersResp
-	if err := json.Unmarshal(jsonData, &usersResp); err != nil {
-		log.Printf("Error unmarshalling user: %v", err)
-		if err = json.NewEncoder(ctx).Encode(response.ResponseMessage{
-			Code:   "3",
-			Values: []string{receivedCreds.Email},
-		}); err != nil {
-			log.Printf("Error encoding response message: %v", err)
-		}
-		return
-	}
-
-	// If user not found
-	if len(usersResp.Users) == 0 {
-		log.Printf("User with email (%s) not found", receivedCreds.Email)
-		if err = json.NewEncoder(ctx).Encode(response.ResponseMessage{
-			Code:   "10",
 			Values: []string{receivedCreds.Email},
 		}); err != nil {
 			log.Printf("Error encoding response message: %v", err)
@@ -79,10 +70,14 @@ func ClassicAuthHandler(ctx *fasthttp.RequestCtx) {
 	}
 
 	// Hash the password
-	hashedPassword := string(md5.New().Sum([]byte(receivedCreds.Password)))
+	hashedPassword := fmt.Sprintf("%x", md5.Sum([]byte(receivedCreds.Password)))
+
+	// Debug
+	log.Printf("HashedPass %v", hashedPassword)
+	log.Printf("Correct hash %v", user.Password)
 
 	// Check if the password is correct
-	if usersResp.Users[0].Password != hashedPassword {
+	if user.Password != hashedPassword {
 		log.Printf("Invalid password for user with email (%s)", receivedCreds.Email)
 		if err = json.NewEncoder(ctx).Encode(response.ResponseMessage{
 			Code:   "11",
@@ -94,7 +89,7 @@ func ClassicAuthHandler(ctx *fasthttp.RequestCtx) {
 	}
 
 	// Generate a token
-	accessToken, err := jwt.CreateJwtToken(usersResp.Users[0].Username, 15*time.Minute)
+	accessToken, err := jwt.CreateJwtToken(user.Username, 15*time.Minute)
 	if err != nil {
 		log.Printf("Error creating JWT token: %v", err)
 		if err = json.NewEncoder(ctx).Encode(response.ResponseMessage{
@@ -107,7 +102,7 @@ func ClassicAuthHandler(ctx *fasthttp.RequestCtx) {
 	}
 
 	// Generate a refresh token
-	refreshToken, err := jwt.CreateJwtToken(usersResp.Users[0].Username, 7*24*time.Hour)
+	refreshToken, err := jwt.CreateJwtToken(user.Username, 7*24*time.Hour)
 	if err != nil {
 		log.Printf("Error creating JWT token: %v", err)
 		if err = json.NewEncoder(ctx).Encode(response.ResponseMessage{
@@ -131,13 +126,13 @@ func ClassicAuthHandler(ctx *fasthttp.RequestCtx) {
 	}
 
 	// remove the password from the user info
-	usersResp.Users[0].Password = ""
+	user.Password = ""
 
 	// Return the token
 	if err = json.NewEncoder(ctx).Encode(TempLoginResp{
 		Status: response.ResponseMessage{Code: "0", Values: nil},
 		Data: TempLoginStruct{
-			UserInfo: usersResp.Users[0],
+			UserInfo: user,
 			Token:    accessToken,
 			Refresh:  refreshToken,
 		},
