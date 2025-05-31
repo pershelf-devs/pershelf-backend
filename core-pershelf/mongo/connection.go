@@ -17,7 +17,7 @@ func ConnectMongoDB() error {
 	fmt.Println("🔧 Starting MongoDB connection...")
 
 	// Determine the path to the .env file
-	envPath := filepath.Join("..", ".env")
+	envPath := filepath.Join("..", "..", ".env")
 
 	// Load the .env file
 	if err := godotenv.Load(envPath); err != nil {
