@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/core-pershelf/endpoints/handlers/auth"
+	"github.com/core-pershelf/endpoints/handlers/books"
 	"github.com/core-pershelf/endpoints/handlers/test"
 	"github.com/valyala/fasthttp"
 )
@@ -36,6 +37,14 @@ func MainHandler(ctx *fasthttp.RequestCtx) {
 		auth.ClassicAuthHandler(ctx)
 	case apiPathHeader + "/auth/register":
 		auth.UserRegisterHandler(ctx)
+
+	case apiPathHeader + "/books/discover/most-reads":
+		books.GetMostReadBooksHandler(ctx)
+	case apiPathHeader + "/dashboard/user/recommended-books":
+		books.GetUserRecomendedBooksHandler(ctx)
+
+	case apiPathHeader + "/books/create":
+		books.CreateBookHandler(ctx)
 
 	default:
 		log.Printf("Endpoint (%s) not found.", pth)

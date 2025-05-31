@@ -19,3 +19,4 @@ type User struct {
 	Name        string             `bson:"name" json:"name" validate:"required,max=1024"`
 	Surname     string             `bson:"surname" json:"surname" validate:"required,max=64"`
 }
+
