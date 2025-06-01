@@ -40,13 +40,19 @@ func GetUserByID(id int) tablesModels.User {
 
 	jsonData, err := helperContact.HelperRequest("/users/get/id/"+strconv.Itoa(id), nil)
 	if err != nil {
-		log.Printf("Error getting user by id: %v", err)
+		log.Printf("Error getting user by id %d: %v", id, err)
 		return tablesModels.User{}
 	}
 
 	var userResp response.UsersResp
 	if err := json.Unmarshal(jsonData, &userResp); err != nil {
 		log.Printf("Error unmarshalling user: %v", err)
+		return tablesModels.User{}
+	}
+
+	// check response code as well (safety like you did for books)
+	if userResp.Status.Code != "0" {
+		log.Printf("Error getting user by ID %d: %v", id, userResp.Status.Code)
 		return tablesModels.User{}
 	}
 

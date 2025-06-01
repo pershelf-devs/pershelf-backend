@@ -51,3 +51,8 @@ type CommentsResp struct {
 	Status   ResponseMessage        `json:"status"`
 	Comments []tablesModels.Comment `json:"comments"`
 }
+
+type BookLikesResp struct {
+	Status    ResponseMessage         `json:"status"`
+	BookLikes []tablesModels.BookLike `json:"bookLikes"`
+}

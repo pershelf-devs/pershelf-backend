@@ -58,6 +58,15 @@ func GetBookByISBN(isbn string) Book {
 	return book
 }
 
+func GetBooksByGenre(genre string) []Book {
+	var books []Book
+	if err := globals.PershelfDB.Where("genre LIKE ?", "%"+genre+"%").Find(&books).Error; err != nil {
+		globals.Log("Error getting books by genre (", genre, "):", err)
+		return nil
+	}
+	return books
+}
+
 // CreateBook creates a new book in the database
 func CreateBook(book *Book) error {
 	if err := globals.PershelfDB.Create(&book).Error; err != nil {

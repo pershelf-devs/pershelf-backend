@@ -103,3 +103,57 @@ func DeleteShelfBookHandler(ctx *fasthttp.RequestCtx) {
 	log.Printf("(Information): shelf_book deleted successfully.")
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
+
+// DeleteShelfBookByShelfIDAndBookIDHandler deletes a shelf_book entry from the database by shelf ID and book ID.
+func DeleteShelfBookByShelfIDAndBookIDHandler(ctx *fasthttp.RequestCtx) {
+	var (
+		pth           = ctx.Path()
+		shelfID, err1 = strconv.Atoi(ctx.UserValue("shelf-id").(string))
+		bookID, err2  = strconv.Atoi(ctx.UserValue("book-id").(string))
+	)
+
+	if err1 != nil {
+		log.Printf("(Error): error converting shelf_book ID to int at endpoint (%s).", string(pth))
+		if err1 := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Error converting shelf_book ID to int"}}); err1 != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	if err2 != nil {
+		log.Printf("(Error): error converting book_id to int at endpoint (%s).", string(pth))
+		if err2 := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Error converting book_id to int"}}); err2 != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	if shelfID == 0 {
+		log.Printf("(Error): shelf_book ID is 0 at endpoint (%s).", string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Shelf_book ID is 0"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	if bookID == 0 {
+		log.Printf("(Error): book_id is 0 at endpoint (%s).", string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Book_id is 0"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	if err := crud.DeleteShelfBookByShelfIDAndBookID(shelfID, bookID); err != nil {
+		log.Printf("(Error): error deleting shelf_book at endpoint (%s).", string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Error deleting shelf_book"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	log.Printf("(Information): shelf_book with shelf_id %d and book_id %d deleted successfully.", shelfID, bookID)
+	if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "0", Values: []string{"Shelf_book deleted successfully"}}); err != nil {
+		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+	}
+}

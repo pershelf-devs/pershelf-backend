@@ -8,12 +8,14 @@ import (
 
 // Review model
 type Review struct {
-	ID         int       `gorm:"column:id;type:int(11);primaryKey;autoIncrement" json:"id"`
-	UserID     int       `gorm:"column:user_id;type:int(11);not null" json:"user_id"`
-	BookID     int       `gorm:"column:book_id;type:int(11);not null" json:"book_id"`
-	ReviewText string    `gorm:"column:review_text;type:text;not null" json:"review_text"`
-	CreatedAt  time.Time `gorm:"column:created_at;type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt  time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" json:"updated_at"`
+	ID          int       `gorm:"column:id;type:int(11);primaryKey;autoIncrement" json:"id"`
+	UserID      int       `gorm:"column:user_id;type:int(11);not null" json:"user_id"`
+	BookID      int       `gorm:"column:book_id;type:int(11);not null" json:"book_id"`
+	ReviewTitle string    `gorm:"column:review_title;type:varchar(512);not null" json:"review_title"`
+	ReviewText  string    `gorm:"column:review_text;type:text;not null" json:"review_text"`
+	Rating      int       `gorm:"column:rating;type:int(11);not null" json:"rating"`
+	CreatedAt   time.Time `gorm:"column:created_at;type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 // TableName sets the table name for GORM
@@ -54,7 +56,7 @@ func GetReviewsByUserID(userID int) []Review {
 // GetReviewsByBookID retrieves all reviews for a specific book ID
 func GetReviewsByBookID(bookID int) []Review {
 	var reviews []Review
-	if err := globals.PershelfDB.Where("book_id = ?", bookID).Find(&reviews).Error; err != nil {
+	if err := globals.PershelfDB.Where("book_id = ?", bookID).Order("created_at DESC").Find(&reviews).Error; err != nil {
 		globals.Log("Error getting reviews by bookID (", bookID, "):", err)
 		return nil
 	}

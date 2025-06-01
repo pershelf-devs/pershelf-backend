@@ -150,7 +150,7 @@ func CreateUserHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	log.Printf("(Information): user created successfully. %+v", user)
+	log.Printf("(Information): user created successfully. %s", user.Name)
 	if err := json.NewEncoder(ctx).Encode(response.UsersResp{
 		Status: response.ResponseMessage{Code: "0", Values: nil},
 		Users:  []crud.User{user},

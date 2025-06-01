@@ -47,6 +47,9 @@ func GetMostReadBooksHandler(ctx *fasthttp.RequestCtx) {
 
 		// Limit the number of books
 		if request.Limit > 0 {
+			if request.Limit > len(books) {
+				request.Limit = len(books)
+			}
 			books = books[:request.Limit]
 		}
 

@@ -57,21 +57,25 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/reviews/delete/id/:id", handlers.DeleteReviewHandler)              // delete review entry by id
 
 	// book handlers (CRUD) => table : book
-	router.POST(dbApiMainPath+"/books/get/all", handlers.GetAllBooksHandler)          // get all books
-	router.POST(dbApiMainPath+"/books/get/id/:id", handlers.GetBookByIDHandler)       // get book by id
-	router.POST(dbApiMainPath+"/books/get/isbn/:isbn", handlers.GetBookByISBNHandler) // get book by ISBN
-	router.POST(dbApiMainPath+"/books/create", handlers.CreateBookHandler)            // create book
-	router.POST(dbApiMainPath+"/books/update", handlers.UpdateBookHandler)            // update book
-	router.POST(dbApiMainPath+"/books/delete/id/:id", handlers.DeleteBookHandler)     // delete book by id
+	router.POST(dbApiMainPath+"/books/get/all", handlers.GetAllBooksHandler)              // get all books
+	router.POST(dbApiMainPath+"/books/get/id/:id", handlers.GetBookByIDHandler)           // get book by id
+	router.POST(dbApiMainPath+"/books/get/isbn/:isbn", handlers.GetBookByISBNHandler)     // get book by ISBN
+	router.POST(dbApiMainPath+"/books/get/genre/:genre", handlers.GetBooksByGenreHandler) // get books by genre
+	router.POST(dbApiMainPath+"/books/create", handlers.CreateBookHandler)                // create book
+	router.POST(dbApiMainPath+"/books/update", handlers.UpdateBookHandler)                // update book
+	router.POST(dbApiMainPath+"/books/delete/id/:id", handlers.DeleteBookHandler)         // delete book by id
 
 	// shelf_book handlers (CRUD) => table : shelf_book
 	router.POST(dbApiMainPath+"/shelf-books/get/all", handlers.GetAllShelfBooksHandler)
 	router.POST(dbApiMainPath+"/shelf-books/get/id/:id", handlers.GetShelfBookByIDHandler)
 	router.POST(dbApiMainPath+"/shelf-books/create", handlers.CreateShelfBookHandler)
 	router.POST(dbApiMainPath+"/shelf-books/delete/id/:id", handlers.DeleteShelfBookHandler)
+	router.POST(dbApiMainPath+"/shelf-books/delete/shelf-id/:shelf-id/book-id/:book-id", handlers.DeleteShelfBookByShelfIDAndBookIDHandler)
 
 	// user_shelf handlers (CRUD) => table : user_shelf
 	router.POST(dbApiMainPath+"/user-shelfs/get/all", handlers.GetAllUserShelfsHandler)
+	router.POST(dbApiMainPath+"/user-shelfs/get/by-user-id/:user-id", handlers.GetUserShelvesByUserIDHandler)
+	router.POST(dbApiMainPath+"/user-shelfs/get/user-id/:user-id/name/:name", handlers.GetUserShelfByUserIDAndNameHandler)
 	router.POST(dbApiMainPath+"/user-shelfs/get/id/:id", handlers.GetUserShelfByIDHandler)
 	router.POST(dbApiMainPath+"/user-shelfs/create", handlers.CreateUserShelfHandler)
 	router.POST(dbApiMainPath+"/user-shelfs/update", handlers.UpdateUserShelfHandler)
@@ -90,6 +94,14 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/comments/create", handlers.CreateCommentHandler)
 	router.POST(dbApiMainPath+"/comments/update", handlers.UpdateCommentHandler)
 	router.POST(dbApiMainPath+"/comments/delete/id/:id", handlers.DeleteCommentHandler)
+
+	// book_likes handlers (CRUD) => table : book_likes
+	router.POST(dbApiMainPath+"/book-likes/get/book-id/:book-id", handlers.GetBookLikesByBookIDHandler)
+	router.POST(dbApiMainPath+"/book-likes/get/user-id/:user-id", handlers.GetBookLikesByUserIDHandler)
+	router.POST(dbApiMainPath+"/book-likes/create", handlers.CreateBookLikeHandler)
+	router.POST(dbApiMainPath+"/book-likes/update", handlers.UpdateBookLikeHandler)
+	router.POST(dbApiMainPath+"/book-likes/delete/id/:id", handlers.DeleteBookLikeByIDHandler)
+	router.POST(dbApiMainPath+"/book-likes/delete/book-id/:book-id/user-id/:user-id", handlers.DeleteBookLikesByBookIDAndUserIDHandler)
 
 	srv := &fasthttp.Server{
 		Handler: router.Handler,

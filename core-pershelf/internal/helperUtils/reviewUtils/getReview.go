@@ -70,7 +70,7 @@ func GetReviewsByUserID(userID int) ([]tablesModels.Review, error) {
 	}
 
 	// Call the helper request
-	jsonData, err := helperContact.HelperRequest("/reviews/get/userID/"+strconv.Itoa(userID), nil)
+	jsonData, err := helperContact.HelperRequest("/reviews/get/user-id/"+strconv.Itoa(userID), nil)
 	if err != nil {
 		log.Printf("Error getting reviews by user ID %d: %v", userID, err)
 		return nil, fmt.Errorf("error getting reviews: %v", err)
@@ -96,7 +96,7 @@ func GetReviewsByBookID(bookID int) ([]tablesModels.Review, error) {
 	}
 
 	// Call the helper request
-	jsonData, err := helperContact.HelperRequest("/reviews/get/bookID/"+strconv.Itoa(bookID), nil)
+	jsonData, err := helperContact.HelperRequest("/reviews/get/book-id/"+strconv.Itoa(bookID), nil)
 	if err != nil {
 		log.Printf("Error getting reviews by book ID %d: %v", bookID, err)
 		return nil, fmt.Errorf("error getting reviews: %v", err)

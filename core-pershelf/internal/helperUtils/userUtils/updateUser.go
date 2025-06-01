@@ -10,31 +10,27 @@ import (
 	"github.com/core-pershelf/rest/helperContact/tablesModels"
 )
 
-func UpdateUser(user tablesModels.User) (tablesModels.User, error) {
+func UpdateUser(user tablesModels.User) error {
 	payload, err := json.Marshal(user)
 	if err != nil {
 		log.Printf("Error marshalling user: %v", err)
-		return tablesModels.User{}, fmt.Errorf("error marshalling user: %w", err)
+		return fmt.Errorf("error marshalling user: %w", err)
 	}
 
 	jsonData, err := helperContact.HelperRequest("/users/update", payload)
 	if err != nil {
 		log.Printf("Error making request to update user: %v", err)
-		return tablesModels.User{}, err
+		return err
 	}
 
-	var userResp response.UsersResp
+	var userResp response.ResponseMessage
 	if err := json.Unmarshal(jsonData, &userResp); err != nil {
-		return tablesModels.User{}, err
+		return err
 	}
 
-	if userResp.Status.Code != "0" {
-		return tablesModels.User{}, fmt.Errorf("error updating user: %s", userResp.Status.Code)
+	if userResp.Code != "0" {
+		return fmt.Errorf("error updating user: %s", userResp.Code)
 	}
 
-	if len(userResp.Users) == 0 {
-		return tablesModels.User{}, fmt.Errorf("no user updated")
-	}
-
-	return userResp.Users[0], nil
+	return nil
 }

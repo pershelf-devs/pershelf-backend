@@ -67,20 +67,30 @@ func GetReviewsByUserIDHandler(ctx *fasthttp.RequestCtx) {
 
 	if err != nil {
 		log.Printf("(Error): error converting user ID to int at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Error converting user ID to int"}},
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	reviews = crud.GetReviewsByUserID(userID)
 	if reviews == nil {
 		log.Printf("(Error): no reviews found for user ID at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"No reviews found for user ID"}},
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	log.Printf("(Information): reviews retrieved successfully.")
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	if err := json.NewEncoder(ctx).Encode(reviews); err != nil {
+	if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+		Status:  response.ResponseMessage{Code: "0", Values: nil},
+		Reviews: reviews,
+	}); err != nil {
 		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
 	}
 }
@@ -95,20 +105,30 @@ func GetReviewsByBookIDHandler(ctx *fasthttp.RequestCtx) {
 
 	if err != nil {
 		log.Printf("(Error): error converting book ID to int at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Error converting book ID to int"}},
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	reviews = crud.GetReviewsByBookID(bookID)
 	if reviews == nil {
 		log.Printf("(Error): no reviews found for book ID at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"No reviews found for book ID"}},
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	log.Printf("(Information): reviews retrieved successfully.")
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	if err := json.NewEncoder(ctx).Encode(reviews); err != nil {
+	if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+		Status:  response.ResponseMessage{Code: "0", Values: nil},
+		Reviews: reviews,
+	}); err != nil {
 		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
 	}
 }
@@ -122,19 +142,33 @@ func CreateReviewHandler(ctx *fasthttp.RequestCtx) {
 
 	if err := json.Unmarshal(ctx.Request.Body(), &review); err != nil {
 		log.Printf("(Error): error unmarshalling request body at endpoint (%s): %v", pth, err)
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+			Status:  response.ResponseMessage{Code: "3", Values: []string{"Error unmarshalling request body"}},
+			Reviews: nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	review = crud.CreateReview(&review)
 	if review.ID == 0 {
 		log.Printf("(Error): error creating review at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Error creating review"}},
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	log.Printf("(Information): review created successfully.")
-	ctx.SetStatusCode(fasthttp.StatusCreated)
+	if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+		Status:  response.ResponseMessage{Code: "0", Values: []string{"Review created successfully"}},
+		Reviews: []crud.Review{review},
+	}); err != nil {
+		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+	}
 }
 
 // UpdateReviewHandler updates an existing review in the database.

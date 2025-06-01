@@ -195,3 +195,27 @@ func GetBookByISBNHandler(ctx *fasthttp.RequestCtx) {
 		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
 	}
 }
+
+func GetBooksByGenreHandler(ctx *fasthttp.RequestCtx) {
+	var (
+		pth  = ctx.Path()
+		isbn = ctx.UserValue("genre").(string)
+	)
+
+	bookList := crud.GetBooksByGenre(isbn)
+	if len(bookList) == 0 {
+		log.Printf("(Error): no books found with genre (%s) at endpoint (%s).", isbn, string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"No books found"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	log.Printf("(Information): books retrieved successfully.")
+	if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+		Status: response.ResponseMessage{Code: "0", Values: nil},
+		Books:  bookList,
+	}); err != nil {
+		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+	}
+}

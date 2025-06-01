@@ -16,6 +16,7 @@ type User struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 	Name        string    `json:"name"`
 	Surname     string    `json:"surname"`
+	ImageBase64 string    `json:"image_base64"`
 }
 
 type Book struct {
@@ -62,12 +63,14 @@ type RefreshToken struct {
 }
 
 type Review struct {
-	ID         int       ` json:"id"`
-	UserID     int       ` json:"user_id"`
-	BookID     int       ` json:"book_id"`
-	ReviewText string    ` json:"review_text"`
-	CreatedAt  time.Time ` json:"created_at"`
-	UpdatedAt  time.Time ` json:"updated_at"`
+	ID          int       `json:"id"`
+	UserID      int       `json:"user_id"`
+	BookID      int       `json:"book_id"`
+	ReviewTitle string    `json:"review_title"`
+	ReviewText  string    `json:"review_text"`
+	Rating      int       `json:"rating"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 type ShelfBook struct {
@@ -96,4 +99,14 @@ type UserShelf struct {
 	ShelfName string    ` json:"shelf_name"`
 	CreatedAt time.Time ` json:"created_at"`
 	UpdatedAt time.Time ` json:"updated_at"`
+}
+
+type BookLike struct {
+	ID        int       `json:"id"`
+	BookID    int       `json:"book_id"`
+	BookName  string    `json:"book_name"`
+	UserID    int       `json:"user_id"`
+	UserName  string    `json:"user_name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

@@ -37,6 +37,7 @@ type User struct {
 	UpdatedAt   time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP;autoUpdateTime" json:"updated_at"`
 	Name        string    `gorm:"column:name;type:text;not null" json:"name"`
 	Surname     string    `gorm:"column:surname;type:varchar(64);not null" json:"surname"`
+	ImageBase64 string    `gorm:"column:image_base64;type:longtext" json:"image_base64"`
 }
 
 func (User) TableName() string {

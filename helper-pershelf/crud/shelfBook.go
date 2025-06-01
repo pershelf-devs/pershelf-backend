@@ -86,3 +86,12 @@ func DeleteShelfBook(shelfBookID int) error {
 	}
 	return nil
 }
+
+// DeleteShelfBookByShelfIDAndBookID deletes a shelf_book entry from the database by shelf ID and book ID
+func DeleteShelfBookByShelfIDAndBookID(shelfID int, bookID int) error {
+	if err := globals.PershelfDB.Where("shelf_id = ? AND book_id = ?", shelfID, bookID).Delete(&ShelfBook{}).Error; err != nil {
+		globals.Log("Error deleting shelf_book by shelf ID and book ID: ", err)
+		return err
+	}
+	return nil
+}

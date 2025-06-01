@@ -40,6 +40,16 @@ func GetUserShelfByID(id int) UserShelf {
 	return userShelf
 }
 
+// GetUserShelvesByUserID retrieves a user_shelf by user ID from the database
+func GetUserShelvesByUserID(userID int) []UserShelf {
+	var userShelves []UserShelf
+	if err := globals.PershelfDB.Where("user_id = ?", userID).Find(&userShelves).Error; err != nil {
+		globals.Log("Error getting user_shelves by user ID: ", err)
+		return nil
+	}
+	return userShelves
+}
+
 // GetUserShelfsByUserID retrieves all shelves belonging to a specific user
 func GetUserShelfsByUserID(userID int) []UserShelf {
 	var userShelfs []UserShelf
@@ -48,6 +58,16 @@ func GetUserShelfsByUserID(userID int) []UserShelf {
 		return nil
 	}
 	return userShelfs
+}
+
+// GetUserShelfByUserIDAndName retrieves a user_shelf by user ID and name from the database
+func GetUserShelfByUserIDAndName(userID int, name string) UserShelf {
+	var userShelf UserShelf
+	if err := globals.PershelfDB.Where("user_id = ? AND shelf_name = ?", userID, name).First(&userShelf).Error; err != nil {
+		globals.Log("Error getting user_shelf by user ID and name: ", err)
+		return UserShelf{}
+	}
+	return userShelf
 }
 
 // CreateUserShelf creates a new user_shelf entry in the database

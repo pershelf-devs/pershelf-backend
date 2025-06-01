@@ -37,6 +37,12 @@ func createDatabasePershelfIfNotExists(dbConf config.DBConnectionConfig) error {
 		return err
 	}
 
+	err = db.Exec("ALTER DATABASE " + dbConf.DbName + " CHARACTER SET utf8mb4 COLLATE utf8mb4_turkish_ci;").Error
+	if err != nil {
+		globals.Log(err)
+		return err
+	}
+
 	globals.Log("pershelf DB " + dbConf.DbName + " created/exists")
 
 	return nil

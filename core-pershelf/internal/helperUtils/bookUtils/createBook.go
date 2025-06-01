@@ -32,7 +32,7 @@ func CreateBook(book tablesModels.Book) (tablesModels.Book, error) {
 	}
 
 	if bookResp.Status.Code != "0" {
-		log.Printf("Helper microservice returned an error: %+v", bookResp)
+		log.Printf("Helper microservice returned an error: %+v", bookResp.Status)
 		return tablesModels.Book{}, fmt.Errorf("error creating book: %s", bookResp.Status.Code)
 	}
 
@@ -40,10 +40,6 @@ func CreateBook(book tablesModels.Book) (tablesModels.Book, error) {
 		log.Printf("Book creation succeeded but no book returned")
 		return tablesModels.Book{}, fmt.Errorf("no book returned after creation")
 	}
-
-	// Debug log
-	log.Printf("Book json data: %s", string(jsonData))
-	log.Printf("Book response: %v", bookResp.Books[0])
 
 	return bookResp.Books[0], nil
 }

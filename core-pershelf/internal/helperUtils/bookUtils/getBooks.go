@@ -18,9 +18,6 @@ func GetAllBooks() []tablesModels.Book {
 		return nil
 	}
 
-	// Debug log
-	log.Printf("All books json data: %s", string(jsonData))
-
 	var bookResp response.BooksResp
 	if err := json.Unmarshal(jsonData, &bookResp); err != nil {
 		log.Printf("Error unmarshalling books: %v", err)
@@ -35,34 +32,35 @@ func GetAllBooks() []tablesModels.Book {
 	return bookResp.Books
 }
 
-func GetBookByID(id int) *tablesModels.Book {
+func GetBookByID(id int) tablesModels.Book {
 	if id == 0 {
-		return nil
+		log.Printf("Invalid book ID")
+		return tablesModels.Book{}
 	}
 
 	jsonData, err := helperContact.HelperRequest("/books/get/id/"+strconv.Itoa(id), nil)
 	if err != nil {
-		log.Printf("Error getting book by ID %d: %v", id, err)
-		return nil
+		log.Printf("Error calling helper request: %v", err)
+		return tablesModels.Book{}
 	}
 
 	var bookResp response.BooksResp
 	if err := json.Unmarshal(jsonData, &bookResp); err != nil {
 		log.Printf("Error unmarshalling book: %v", err)
-		return nil
+		return tablesModels.Book{}
 	}
 
 	if bookResp.Status.Code != "0" {
-		log.Printf("Error getting book by ID %d: %v", id, bookResp.Status.Code)
-		return nil
+		log.Printf("Backend returned error: %s", bookResp.Status.Code)
+		return tablesModels.Book{}
 	}
 
 	if len(bookResp.Books) == 0 {
 		log.Printf("No book found with ID %d", id)
-		return nil
+		return tablesModels.Book{}
 	}
 
-	return &bookResp.Books[0]
+	return bookResp.Books[0]
 }
 
 func GetBookByISBN(isbn string) *tablesModels.Book {
@@ -93,4 +91,36 @@ func GetBookByISBN(isbn string) *tablesModels.Book {
 	}
 
 	return &bookResp.Books[0]
+}
+
+// GetBooksByGenre retrieves books by genre from the database.
+func GetBooksByGenre(genre string) []tablesModels.Book {
+	if genre == "" {
+		log.Printf("Genre is empty")
+		return nil
+	}
+
+	jsonData, err := helperContact.HelperRequest("/books/get/genre/"+genre, nil)
+	if err != nil {
+		log.Printf("Error getting books by genre %s: %v", genre, err)
+		return nil
+	}
+
+	var bookResp response.BooksResp
+	if err := json.Unmarshal(jsonData, &bookResp); err != nil {
+		log.Printf("Error unmarshalling books: %v", err)
+		return nil
+	}
+
+	if bookResp.Status.Code != "0" {
+		log.Printf("Backend returned error for genre %s: %s", genre, bookResp.Status.Code)
+		return nil
+	}
+
+	if len(bookResp.Books) == 0 {
+		log.Printf("No books found for genre %s", genre)
+		return nil
+	}
+
+	return bookResp.Books
 }

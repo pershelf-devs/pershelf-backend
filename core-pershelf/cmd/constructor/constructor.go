@@ -4,8 +4,11 @@ import (
 	"log"
 
 	"github.com/core-pershelf/endpoints/handlers/auth"
+	"github.com/core-pershelf/endpoints/handlers/bookLikes"
 	"github.com/core-pershelf/endpoints/handlers/books"
-	"github.com/core-pershelf/endpoints/handlers/test"
+	"github.com/core-pershelf/endpoints/handlers/reviews"
+	"github.com/core-pershelf/endpoints/handlers/test" // <-- added this line
+	"github.com/core-pershelf/endpoints/handlers/users"
 	"github.com/valyala/fasthttp"
 )
 
@@ -45,6 +48,28 @@ func MainHandler(ctx *fasthttp.RequestCtx) {
 
 	case apiPathHeader + "/books/create":
 		books.CreateBookHandler(ctx)
+
+	case apiPathHeader + "/books/get/id":
+		books.GetBookByIDHandler(ctx)
+
+	case apiPathHeader + "/books/get/by-genre":
+		books.GetBooksByGenreHandler(ctx)
+
+	case apiPathHeader + "/users/get/id":
+		users.GetUserByIDHandler(ctx)
+	case apiPathHeader + "/users/update/profile-photo":
+		users.UpdateUserProfilePhotoHandler(ctx)
+
+	case apiPathHeader + "/book-likes/like/by-book-id":
+		bookLikes.CreateBookLikeHandler(ctx)
+
+	case apiPathHeader + "/reviews/get/book-reviews":
+		reviews.GetReviewsByBookIDHandler(ctx)
+	case apiPathHeader + "/reviews/create/book-review":
+		reviews.CreateBookReviewHandler(ctx)
+
+	case apiPathHeader + "/reviews/get/by-user":
+		reviews.GetReviewsByUserIDHandler(ctx)
 
 	default:
 		log.Printf("Endpoint (%s) not found.", pth)

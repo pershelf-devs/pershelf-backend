@@ -43,6 +43,12 @@ func InitializeTables() error {
 		return err
 	}
 
+	// shelf_books
+	if err := globals.PershelfDB.AutoMigrate(&crud.ShelfBook{}); err != nil {
+		globals.Log("Error initializing tables: ", err)
+		return err
+	}
+
 	// refresh_tokens
 	if err := globals.PershelfDB.AutoMigrate(&crud.RefreshToken{}); err != nil {
 		globals.Log("Error initializing tables: ", err)
