@@ -13,14 +13,18 @@ import (
 // GetAllBooksHandler retrieves all books from the database.
 func GetAllBooksHandler(ctx *fasthttp.RequestCtx) {
 	var books []crud.Book
-	if books := crud.GetAllBooks(); books == nil {
+	if books = crud.GetAllBooks(); books == nil {
 		log.Printf("(Error): error retrieving books list at endpoint (%s).", string(ctx.Path()))
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Error retrieving books list"}},
+			Books:  nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(ctx.Path()))
+		}
 		return
 	}
 
-	log.Printf("(Information): Books list retrieved successfully.")
-	ctx.SetStatusCode(fasthttp.StatusOK)
+	log.Printf("(Information): Books list retrieved successfully (length: %d).", len(books))
 	if err := json.NewEncoder(ctx).Encode(response.BooksResp{
 		Status: response.ResponseMessage{Code: "0", Values: nil},
 		Books:  books,
@@ -39,20 +43,32 @@ func GetBookByIDHandler(ctx *fasthttp.RequestCtx) {
 
 	if err != nil {
 		log.Printf("(Error): error converting book ID to int at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Error converting book ID to int"}},
+			Books:  nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	book = crud.GetBookByID(bookID)
 	if book.ID == 0 {
 		log.Printf("(Error): book not found by ID at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Book not found"}},
+			Books:  nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	log.Printf("(Information): book retrieved successfully.")
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	if err := json.NewEncoder(ctx).Encode(book); err != nil {
+	if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+		Status: response.ResponseMessage{Code: "0", Values: nil},
+		Books:  []crud.Book{book},
+	}); err != nil {
 		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
 	}
 }
@@ -66,20 +82,31 @@ func CreateBookHandler(ctx *fasthttp.RequestCtx) {
 
 	if err := json.Unmarshal(ctx.Request.Body(), &book); err != nil {
 		log.Printf("(Error): error unmarshalling request body at endpoint (%s): %v", pth, err)
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Error unmarshalling request body"}},
+			Books:  nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
-	book = crud.CreateBook(&book)
-	if book.ID == 0 {
+	if err := crud.CreateBook(&book); err != nil {
 		log.Printf("(Error): error creating book at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Error creating book"}},
+			Books:  nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	log.Printf("(Information): book created successfully.")
-	ctx.SetStatusCode(fasthttp.StatusCreated)
-	if err := json.NewEncoder(ctx).Encode(book); err != nil {
+	if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+		Status: response.ResponseMessage{Code: "0", Values: nil},
+		Books:  []crud.Book{book},
+	}); err != nil {
 		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
 	}
 }
@@ -93,19 +120,25 @@ func UpdateBookHandler(ctx *fasthttp.RequestCtx) {
 
 	if err := json.Unmarshal(ctx.Request.Body(), &book); err != nil {
 		log.Printf("(Error): error unmarshalling request body at endpoint (%s): %v", pth, err)
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Error unmarshalling request body"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	book = crud.UpdateBook(book)
 	if book.ID == 0 {
 		log.Printf("(Error): error updating book at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Error updating book"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	log.Printf("(Information): book updated successfully.")
-	ctx.SetStatusCode(fasthttp.StatusOK)
+	if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "0", Values: nil}); err != nil {
+		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+	}
 }
 
 // DeleteBookHandler deletes a book entry from the database.
@@ -117,18 +150,24 @@ func DeleteBookHandler(ctx *fasthttp.RequestCtx) {
 
 	if err != nil {
 		log.Printf("(Error): error converting book ID to int at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Error converting book ID to int"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	if err := crud.DeleteBook(bookID); err != nil {
 		log.Printf("(Error): error deleting book at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Error deleting book"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	log.Printf("(Information): book deleted successfully.")
-	ctx.SetStatusCode(fasthttp.StatusOK)
+	if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "0", Values: nil}); err != nil {
+		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+	}
 }
 
 // GetBooksByISBNHandler retrieves a book by ISBN from the database.
@@ -142,13 +181,17 @@ func GetBookByISBNHandler(ctx *fasthttp.RequestCtx) {
 	book = crud.GetBookByISBN(isbn)
 	if book.ID == 0 {
 		log.Printf("(Error): book not found with ISBN (%s) at endpoint (%s).", isbn, string(pth))
-		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Book not found"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	log.Printf("(Information): book retrieved successfully.")
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	if err := json.NewEncoder(ctx).Encode(book); err != nil {
+	if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+		Status: response.ResponseMessage{Code: "0", Values: nil},
+		Books:  []crud.Book{book},
+	}); err != nil {
 		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
 	}
 }

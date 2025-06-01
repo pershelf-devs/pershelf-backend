@@ -18,7 +18,7 @@ type Follow struct {
 
 // TableName sets the table name for GORM
 func (Follow) TableName() string {
-	return "follow"
+	return "follows"
 }
 
 // GetAllFollows retrieves all follow relationships from the database

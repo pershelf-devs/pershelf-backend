@@ -17,7 +17,7 @@ type UserShelf struct {
 
 // TableName sets the table name for GORM
 func (UserShelf) TableName() string {
-	return "user_shelf"
+	return "user_shelves"
 }
 
 // GetAllUserShelfs retrieves all user_shelf entries from the database

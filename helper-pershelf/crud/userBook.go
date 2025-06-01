@@ -19,7 +19,7 @@ type UserBook struct {
 }
 
 func (UserBook) TableName() string {
-	return "user_book"
+	return "user_books"
 }
 
 // GetAllUserBooks gets all user books from the database

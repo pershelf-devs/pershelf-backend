@@ -1,13 +1,12 @@
 package books
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 
-	"github.com/core-pershelf/globals"
-	"github.com/core-pershelf/mongo/tablesModels"
+	"github.com/core-pershelf/internal/helperUtils/bookUtils"
 	"github.com/core-pershelf/rest/helperContact/response"
+	"github.com/core-pershelf/rest/helperContact/tablesModels"
 	"github.com/valyala/fasthttp"
 )
 
@@ -37,7 +36,7 @@ func CreateBookHandler(ctx *fasthttp.RequestCtx) {
 		}
 
 		// Check if the required fields are provided
-		if book.Title == "" || book.Author == "" || book.ISBN == "" || book.Category == "" || book.Language == "" {
+		if book.Title == "" || book.Author == "" || book.ISBN == "" {
 			log.Printf("Missing required fields at endpoint %s", pth)
 			if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{
 				Code:   "4",
@@ -48,35 +47,23 @@ func CreateBookHandler(ctx *fasthttp.RequestCtx) {
 			return
 		}
 
-		// Check if the page count is valid
-		if book.PageCount <= 0 {
-			log.Printf("Invalid page count at endpoint %s", pth)
-			if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{
-				Code:   "6",
-				Values: []string{"Invalid page count"},
-			}); err != nil {
-				log.Printf("Error encoding the response body at endpoint %s: %v", pth, err)
-			}
-			return
-		}
-
-		// Check if the language code is valid
-		if len(book.Language) != 2 && len(book.Language) != 3 {
-			log.Printf("Invalid language code at endpoint %s", pth)
-			if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{
-				Code:   "7",
-				Values: []string{"Invalid language code"},
-			}); err != nil {
-				log.Printf("Error encoding the response body at endpoint %s: %v", pth, err)
-			}
-			return
-		}
-
-		// Save the book to the database
-		if _, err := globals.BooksCollection.InsertOne(context.Background(), book); err != nil {
+		// Create the book
+		book, err := bookUtils.CreateBook(book)
+		if err != nil {
 			log.Printf("Error creating book at endpoint %s: %v", pth, err)
 			if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{
-				Code:   "9",
+				Code:   "3",
+				Values: []string{"Error creating book"},
+			}); err != nil {
+				log.Printf("Error encoding the response body at endpoint %s: %v", pth, err)
+			}
+			return
+		}
+
+		if book.ID == 0 {
+			log.Printf("Error creating book at endpoint %s: %v", pth, err)
+			if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{
+				Code:   "3",
 				Values: []string{"Error creating book"},
 			}); err != nil {
 				log.Printf("Error encoding the response body at endpoint %s: %v", pth, err)

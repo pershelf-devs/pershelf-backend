@@ -17,7 +17,7 @@ type ShelfBook struct {
 
 // TableName sets the table name for GORM
 func (ShelfBook) TableName() string {
-	return "shelf_book"
+	return "shelf_books"
 }
 
 // GetAllShelfBooks retrieves all shelf_book entries from the database

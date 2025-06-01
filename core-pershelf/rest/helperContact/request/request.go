@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/core-pershelf/globals"
 	"github.com/valyala/fasthttp"
 )
 
@@ -27,7 +28,7 @@ const (
 //	payload, _ := json.Marshal(map[string]interface{}{"id": 123})
 //	response, err := HelperRequest("/users", payload)
 func HelperRequest(endpointPath string, payload []byte) ([]byte, error) {
-	url := fmt.Sprintf("http://127.0.0.1:55000%s%s", DbApiMainPath, endpointPath)
+	url := fmt.Sprintf("http://127.0.0.1:%s%s%s", globals.ServerConf.Server.HelperPort, DbApiMainPath, endpointPath)
 
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)

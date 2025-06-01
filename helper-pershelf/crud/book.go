@@ -19,11 +19,13 @@ type Book struct {
 	Description   string    `gorm:"column:description;type:text;null" json:"description"`
 	CreatedAt     time.Time `gorm:"column:created_at;type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt     time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" json:"updated_at"`
+	Reads         int       `gorm:"column:reads;type:int(11);not null;default:0" json:"reads"`
+	ImageBase64   string    `gorm:"column:image_base64;type:longtext;null" json:"image_base64"`
 }
 
 // TableName sets the table name for GORM
 func (Book) TableName() string {
-	return "book"
+	return "books"
 }
 
 // GetAllBooks retrieves all books from the database
@@ -57,12 +59,12 @@ func GetBookByISBN(isbn string) Book {
 }
 
 // CreateBook creates a new book in the database
-func CreateBook(book *Book) Book {
+func CreateBook(book *Book) error {
 	if err := globals.PershelfDB.Create(&book).Error; err != nil {
 		globals.Log("Error creating book: ", err)
-		return Book{}
+		return err
 	}
-	return *book
+	return nil
 }
 
 // UpdateBook updates an existing book in the database

@@ -27,14 +27,14 @@ MariaDB [pershelf]> describe users;
 
 type User struct {
 	ID          int       `gorm:"column:id;type:int(11);primaryKey;autoIncrement" json:"id"`
-	Username    string    `gorm:"column:username;size:1024;unique;not null" json:"username"`
+	Username    string    `gorm:"column:username;size:255;unique;not null" json:"username"`
 	Password    string    `gorm:"column:password;size:128" json:"password"`
 	Email       string    `gorm:"column:email;size:1024" json:"email"`
 	Age         int       `gorm:"column:age;type:int(11);not null" json:"age"`
 	Phone       string    `gorm:"column:phone;size:16;null;default:''" json:"phone"`
 	Description string    `gorm:"column:description;type:text" json:"description"`
-	CreatedAt   time.Time `gorm:"column:created_at;not null;default:current_timestamp" json:"created_at"`
-	UpdatedAt   time.Time `gorm:"column:updated_at;not null;default:current_timestamp;autoUpdateTime" json:"updated_at"`
+	CreatedAt   time.Time `gorm:"column:created_at;type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP;autoUpdateTime" json:"updated_at"`
 	Name        string    `gorm:"column:name;type:text;not null" json:"name"`
 	Surname     string    `gorm:"column:surname;type:varchar(64);not null" json:"surname"`
 }

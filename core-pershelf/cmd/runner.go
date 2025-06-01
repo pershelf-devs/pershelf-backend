@@ -1,13 +1,13 @@
 package cmd
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 
 	"github.com/core-pershelf/cmd/constructor"
 	"github.com/core-pershelf/cmd/starter"
 	"github.com/core-pershelf/globals"
-	"github.com/core-pershelf/mongo"
 )
 
 var (
@@ -21,14 +21,8 @@ func Run() {
 	// Initialize log file
 	initLogFile(logFilePath)
 
-	// connect to mongo
-	err := mongo.ConnectMongoDB()
-	if err != nil {
-		log.Fatalf("(Error) : error connecting to mongo : %v", err)
-	}
-
-	// Initialize MongoDB collections
-	globals.InitCollections()
+	// Initialize server config
+	initServerConfig()
 
 	// start the server
 	starter.StartServer(srv)
@@ -42,4 +36,24 @@ func initLogFile(logFilePath string) {
 	}
 	log.SetOutput(LogFile)
 	log.Printf("Log output is set to %s", logFilePath)
+}
+
+// initServerConfig reads the server config file and initializes the global variables
+func initServerConfig() {
+	// Read file: /pershelf/etc/server.json
+	serverConfig, err := os.ReadFile("/pershelf/etc/server.json")
+	if err != nil {
+		log.Fatalf("(Error) : error reading the server config file : %v", err)
+	}
+
+	// Unmarshal the server config
+	err = json.Unmarshal(serverConfig, &globals.ServerConf)
+	if err != nil {
+		log.Fatalf("(Error) : error unmarshalling the server config file : %v", err)
+	}
+
+	// Check fields
+	if globals.ServerConf.Server.ServerIP == "" || globals.ServerConf.Server.ServerPort == "" || globals.ServerConf.Server.HelperPort == "" {
+		log.Fatalf("(Error) : server config file is not valid")
+	}
 }

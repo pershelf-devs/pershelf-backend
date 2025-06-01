@@ -13,14 +13,38 @@ func InitializeTables() error {
 		return err
 	}
 
-	// refresh_tokens
-	if err := globals.PershelfDB.AutoMigrate(&crud.RefreshToken{}); err != nil {
+	// books
+	if err := globals.PershelfDB.AutoMigrate(&crud.Book{}); err != nil {
 		globals.Log("Error initializing tables: ", err)
 		return err
 	}
 
-	// user_book
+	// reviews
+	if err := globals.PershelfDB.AutoMigrate(&crud.Review{}); err != nil {
+		globals.Log("Error initializing tables: ", err)
+		return err
+	}
+
+	// comments
+	if err := globals.PershelfDB.AutoMigrate(&crud.Comment{}); err != nil {
+		globals.Log("Error initializing tables: ", err)
+		return err
+	}
+
+	// user_shelves
+	if err := globals.PershelfDB.AutoMigrate(&crud.UserShelf{}); err != nil {
+		globals.Log("Error initializing tables: ", err)
+		return err
+	}
+
+	// user_books
 	if err := globals.PershelfDB.AutoMigrate(&crud.UserBook{}); err != nil {
+		globals.Log("Error initializing tables: ", err)
+		return err
+	}
+
+	// refresh_tokens
+	if err := globals.PershelfDB.AutoMigrate(&crud.RefreshToken{}); err != nil {
 		globals.Log("Error initializing tables: ", err)
 		return err
 	}

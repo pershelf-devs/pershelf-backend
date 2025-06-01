@@ -18,7 +18,7 @@ type Review struct {
 
 // TableName sets the table name for GORM
 func (Review) TableName() string {
-	return "review"
+	return "reviews"
 }
 
 // GetAllReviews retrieves all reviews from the database

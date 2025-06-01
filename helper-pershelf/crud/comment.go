@@ -19,7 +19,7 @@ type Comment struct {
 
 // TableName sets the table name for GORM
 func (Comment) TableName() string {
-	return "comment"
+	return "comments"
 }
 
 // GetAllComments retrieves all comments from the database
