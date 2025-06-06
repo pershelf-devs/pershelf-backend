@@ -56,3 +56,8 @@ type BookLikesResp struct {
 	Status    ResponseMessage `json:"status"`
 	BookLikes []crud.BookLike `json:"bookLikes"`
 }
+
+type UserBookRelationsResp struct {
+	Status            ResponseMessage         `json:"status"`
+	UserBookRelations []crud.UserBookRelation `json:"userBookRelations"`
+}

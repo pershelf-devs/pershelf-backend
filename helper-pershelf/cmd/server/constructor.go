@@ -103,6 +103,18 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/book-likes/delete/id/:id", handlers.DeleteBookLikeByIDHandler)
 	router.POST(dbApiMainPath+"/book-likes/delete/book-id/:book-id/user-id/:user-id", handlers.DeleteBookLikesByBookIDAndUserIDHandler)
 
+	// user_book_relations handlers (CRUD) => table : user_book_relations
+	router.POST(dbApiMainPath+"/user-book-relations/get/all", handlers.GetAllUserBookRelationsHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/get/id/:id", handlers.GetUserBookRelationByIDHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/get/user-id/:user-id", handlers.GetUserBookRelationsByUserIDHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/get/book-id/:book-id", handlers.GetUserBookRelationsByBookIDHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/create", handlers.CreateUserBookRelationHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/update", handlers.UpdateUserBookRelationHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/delete/id/:id", handlers.DeleteUserBookRelationByIDHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/delete/user-id/:user-id", handlers.DeleteUserBookRelationByUserIDHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/delete/book-id/:book-id", handlers.DeleteUserBookRelationByBookIDHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/delete/user-id/:user-id/book-id/:book-id", handlers.DeleteUserBookRelationByUserIDAndBookIDHandler)
+
 	srv := &fasthttp.Server{
 		Handler: router.Handler,
 	}
