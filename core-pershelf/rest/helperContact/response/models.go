@@ -56,3 +56,8 @@ type BookLikesResp struct {
 	Status    ResponseMessage         `json:"status"`
 	BookLikes []tablesModels.BookLike `json:"bookLikes"`
 }
+
+type UserBookRelationsResp struct {
+	Status            ResponseMessage                 `json:"status"`
+	UserBookRelations []tablesModels.UserBookRelation `json:"userBookRelations"`
+}

@@ -11,7 +11,7 @@ type UserBookRelation struct {
 	UserID    int       `gorm:"column:user_id;type:int(11);not null" json:"user_id"`
 	BookID    int       `gorm:"column:book_id;type:int(11);not null" json:"book_id"`
 	Like      bool      `gorm:"column:like;type:boolean;not null;default:false" json:"like"`
-	Follow    bool      `gorm:"column:follow;type:boolean;not null;default:false" json:"follow"`
+	Favorite  bool      `gorm:"column:favorite;type:boolean;not null;default:false" json:"favorite"`
 	CreatedAt time.Time `gorm:"column:created_at;type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" json:"updated_at"`
 }
@@ -58,6 +58,16 @@ func GetUserBookRelationsByBookID(bookID int) []UserBookRelation {
 		return nil
 	}
 	return userBookRelations
+}
+
+// GetUserBookRelationByUserIDAndBookID gets a user book relation by user id and book id
+func GetUserBookRelationByUserIDAndBookID(userID, bookID int) UserBookRelation {
+	userBookRelation := UserBookRelation{}
+	if err := globals.PershelfDB.Where("user_id = ? AND book_id = ?", userID, bookID).First(&userBookRelation).Error; err != nil {
+		globals.Log("Error getting user book relation by user id and book id", err)
+		return UserBookRelation{}
+	}
+	return userBookRelation
 }
 
 // CreateUserBookRelation creates a user book relation

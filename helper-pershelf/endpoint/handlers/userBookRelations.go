@@ -184,6 +184,79 @@ func GetUserBookRelationsByBookIDHandler(ctx *fasthttp.RequestCtx) {
 	}
 }
 
+// GetUserBookRelationByUserIDAndBookIDHandler gets a user book relation by user id and book id
+func GetUserBookRelationByUserIDAndBookIDHandler(ctx *fasthttp.RequestCtx) {
+	var (
+		pth              = ctx.Path()
+		userID, err1     = strconv.Atoi(ctx.UserValue("user-id").(string))
+		bookID, err2     = strconv.Atoi(ctx.UserValue("book-id").(string))
+		userBookRelation crud.UserBookRelation
+	)
+
+	if err1 != nil {
+		log.Printf("(Error): error converting user ID to int at endpoint (%s).", string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.UserBookRelationsResp{
+			Status:            response.ResponseMessage{Code: "3", Values: []string{"Error converting user ID to int"}},
+			UserBookRelations: nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	if err2 != nil {
+		log.Printf("(Error): error converting book ID to int at endpoint (%s).", string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.UserBookRelationsResp{
+			Status:            response.ResponseMessage{Code: "3", Values: []string{"Error converting book ID to int"}},
+			UserBookRelations: nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	if userID <= 0 {
+		log.Printf("(Error): invalid user ID (retrieved: %d) at endpoint (%s).", userID, string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.UserBookRelationsResp{
+			Status:            response.ResponseMessage{Code: "3", Values: []string{"Invalid user ID"}},
+			UserBookRelations: nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	if bookID <= 0 {
+		log.Printf("(Error): invalid book ID (retrieved: %d) at endpoint (%s).", bookID, string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.UserBookRelationsResp{
+			Status:            response.ResponseMessage{Code: "3", Values: []string{"Invalid book ID"}},
+			UserBookRelations: nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	if userBookRelation = crud.GetUserBookRelationByUserIDAndBookID(userID, bookID); userBookRelation.ID == 0 {
+		log.Printf("(Error): error retrieving user book relation at endpoint (%s).", string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.UserBookRelationsResp{
+			Status:            response.ResponseMessage{Code: "3", Values: []string{"Error retrieving user book relation"}},
+			UserBookRelations: nil,
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	log.Printf("(Information): User book relation retrieved successfully (id: %d).", userBookRelation.ID)
+	if err := json.NewEncoder(ctx).Encode(response.UserBookRelationsResp{
+		Status:            response.ResponseMessage{Code: "0", Values: nil},
+		UserBookRelations: []crud.UserBookRelation{userBookRelation},
+	}); err != nil {
+		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+	}
+}
+
 // CreateUserBookRelationHandler creates a user book relation
 func CreateUserBookRelationHandler(ctx *fasthttp.RequestCtx) {
 	var (

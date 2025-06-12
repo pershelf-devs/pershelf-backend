@@ -4,10 +4,10 @@ import (
 	"log"
 
 	"github.com/core-pershelf/endpoints/handlers/auth"
-	"github.com/core-pershelf/endpoints/handlers/bookLikes"
 	"github.com/core-pershelf/endpoints/handlers/books"
 	"github.com/core-pershelf/endpoints/handlers/reviews"
 	"github.com/core-pershelf/endpoints/handlers/test" // <-- added this line
+	"github.com/core-pershelf/endpoints/handlers/userBookRelations"
 	"github.com/core-pershelf/endpoints/handlers/users"
 	"github.com/valyala/fasthttp"
 )
@@ -60,8 +60,10 @@ func MainHandler(ctx *fasthttp.RequestCtx) {
 	case apiPathHeader + "/users/update/profile-photo":
 		users.UpdateUserProfilePhotoHandler(ctx)
 
-	case apiPathHeader + "/book-likes/like/by-book-id":
-		bookLikes.CreateBookLikeHandler(ctx)
+	case apiPathHeader + "/user-book-relations/get/user-book-relation":
+		userBookRelations.GetUserBookRelationByUserIDAndBookIDHandler(ctx)
+	case apiPathHeader + "/user-book-relations/like":
+		userBookRelations.LikeBookHandler(ctx)
 
 	case apiPathHeader + "/reviews/get/book-reviews":
 		reviews.GetReviewsByBookIDHandler(ctx)

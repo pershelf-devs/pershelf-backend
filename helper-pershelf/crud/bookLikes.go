@@ -6,6 +6,7 @@ import (
 	"github.com/pershelf/pershelf/globals"
 )
 
+// This will be deprecated (12.06.2025) => use UserBookRelation instead
 type BookLike struct {
 	ID        int       `gorm:"column:id;type:int(11);primaryKey;autoIncrement" json:"id"`
 	BookID    int       `gorm:"column:book_id;type:int(11);not null" json:"book_id"`

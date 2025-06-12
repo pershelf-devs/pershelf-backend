@@ -108,6 +108,7 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/user-book-relations/get/id/:id", handlers.GetUserBookRelationByIDHandler)
 	router.POST(dbApiMainPath+"/user-book-relations/get/user-id/:user-id", handlers.GetUserBookRelationsByUserIDHandler)
 	router.POST(dbApiMainPath+"/user-book-relations/get/book-id/:book-id", handlers.GetUserBookRelationsByBookIDHandler)
+	router.POST(dbApiMainPath+"/user-book-relations/get/user-id/:user-id/book-id/:book-id", handlers.GetUserBookRelationByUserIDAndBookIDHandler)
 	router.POST(dbApiMainPath+"/user-book-relations/create", handlers.CreateUserBookRelationHandler)
 	router.POST(dbApiMainPath+"/user-book-relations/update", handlers.UpdateUserBookRelationHandler)
 	router.POST(dbApiMainPath+"/user-book-relations/delete/id/:id", handlers.DeleteUserBookRelationByIDHandler)

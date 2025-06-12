@@ -110,3 +110,13 @@ type BookLike struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type UserBookRelation struct {
+	ID        int       `json:"id"`
+	UserID    int       `json:"user_id"`
+	BookID    int       `json:"book_id"`
+	Like      bool      `json:"like"`
+	Favorite  bool      `json:"favorite"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
