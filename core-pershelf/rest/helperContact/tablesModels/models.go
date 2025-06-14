@@ -117,6 +117,8 @@ type UserBookRelation struct {
 	BookID    int       `json:"book_id"`
 	Like      bool      `json:"like"`
 	Favorite  bool      `json:"favorite"`
+	ReadList  bool      `json:"read_list"`
+	Read      bool      `json:"read"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

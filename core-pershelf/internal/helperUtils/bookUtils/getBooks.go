@@ -32,6 +32,39 @@ func GetAllBooks() []tablesModels.Book {
 	return bookResp.Books
 }
 
+func GetBooksByIDs(ids []int) []tablesModels.Book {
+	if len(ids) == 0 {
+		log.Printf("No book IDs provided")
+		return nil
+	}
+
+	// Marshal ids to json
+	payload, err := json.Marshal(ids)
+	if err != nil {
+		log.Printf("Error marshalling ids: %v", err)
+		return nil
+	}
+
+	jsonData, err := helperContact.HelperRequest("/books/get/ids", payload)
+	if err != nil {
+		log.Printf("Error calling helper request: %v", err)
+		return nil
+	}
+
+	var bookResp response.BooksResp
+	if err := json.Unmarshal(jsonData, &bookResp); err != nil {
+		log.Printf("Error unmarshalling book: %v", err)
+		return nil
+	}
+
+	if bookResp.Status.Code != "0" {
+		log.Printf("Error getting books by IDs: %v", bookResp.Status.Code)
+		return nil
+	}
+
+	return bookResp.Books
+}
+
 func GetBookByID(id int) tablesModels.Book {
 	if id == 0 {
 		log.Printf("Invalid book ID")

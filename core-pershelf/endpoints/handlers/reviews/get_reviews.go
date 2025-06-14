@@ -98,6 +98,5 @@ func GetReviewsByUserIDHandler(ctx *fasthttp.RequestCtx) {
 		} else {
 			log.Printf("Reviews retrieved successfully at endpoint (%s).", pth)
 		}
-
 	}
 }

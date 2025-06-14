@@ -3,8 +3,10 @@ package constructor
 import (
 	"log"
 
+	"github.com/core-pershelf/authentication/basic"
 	"github.com/core-pershelf/endpoints/handlers/auth"
 	"github.com/core-pershelf/endpoints/handlers/books"
+	"github.com/core-pershelf/endpoints/handlers/follows"
 	"github.com/core-pershelf/endpoints/handlers/reviews"
 	"github.com/core-pershelf/endpoints/handlers/test" // <-- added this line
 	"github.com/core-pershelf/endpoints/handlers/userBookRelations"
@@ -41,39 +43,66 @@ func MainHandler(ctx *fasthttp.RequestCtx) {
 	case apiPathHeader + "/auth/register":
 		auth.UserRegisterHandler(ctx)
 
-	case apiPathHeader + "/books/discover/most-reads":
-		books.GetMostReadBooksHandler(ctx)
-	case apiPathHeader + "/dashboard/user/recommended-books":
-		books.GetUserRecomendedBooksHandler(ctx)
-
-	case apiPathHeader + "/books/create":
-		books.CreateBookHandler(ctx)
-
-	case apiPathHeader + "/books/get/id":
-		books.GetBookByIDHandler(ctx)
-
-	case apiPathHeader + "/books/get/by-genre":
-		books.GetBooksByGenreHandler(ctx)
-
-	case apiPathHeader + "/users/get/id":
-		users.GetUserByIDHandler(ctx)
-	case apiPathHeader + "/users/update/profile-photo":
-		users.UpdateUserProfilePhotoHandler(ctx)
-
-	case apiPathHeader + "/user-book-relations/get/user-book-relation":
-		userBookRelations.GetUserBookRelationByUserIDAndBookIDHandler(ctx)
-	case apiPathHeader + "/user-book-relations/like":
-		userBookRelations.LikeBookHandler(ctx)
-
-	case apiPathHeader + "/reviews/get/book-reviews":
-		reviews.GetReviewsByBookIDHandler(ctx)
-	case apiPathHeader + "/reviews/create/book-review":
-		reviews.CreateBookReviewHandler(ctx)
-
-	case apiPathHeader + "/reviews/get/by-user":
-		reviews.GetReviewsByUserIDHandler(ctx)
-
 	default:
-		log.Printf("Endpoint (%s) not found.", pth)
+		// authenticate the user
+		if !basic.IsAuthenticated(ctx) {
+			return
+		}
+		switch pth {
+		case apiPathHeader + "/books/discover/most-reads":
+			books.GetMostReadBooksHandler(ctx)
+		case apiPathHeader + "/dashboard/user/recommended-books":
+			books.GetUserRecomendedBooksHandler(ctx)
+
+		case apiPathHeader + "/books/create":
+			books.CreateBookHandler(ctx)
+
+		case apiPathHeader + "/books/get/id":
+			books.GetBookByIDHandler(ctx)
+
+		case apiPathHeader + "/books/get/by-genre":
+			books.GetBooksByGenreHandler(ctx)
+
+		case apiPathHeader + "/books/get/user/liked-books":
+			books.GetLikedBooksByUserIDHandler(ctx)
+		case apiPathHeader + "/books/get/user/favorite-books":
+			books.GetFavoriteBooksByUserIDHandler(ctx)
+		case apiPathHeader + "/books/get/user/read-list":
+			books.GetReadListByUserIDHandler(ctx)
+		case apiPathHeader + "/books/get/user/read-books":
+			books.GetReadBooksByUserIDHandler(ctx)
+
+		case apiPathHeader + "/users/get/id":
+			users.GetUserByIDHandler(ctx)
+		case apiPathHeader + "/users/update/profile-photo":
+			users.UpdateUserProfilePhotoHandler(ctx)
+
+		case apiPathHeader + "/user-book-relations/get/user-book-relation":
+			userBookRelations.GetUserBookRelationByUserIDAndBookIDHandler(ctx)
+		case apiPathHeader + "/user-book-relations/like":
+			userBookRelations.LikeBookHandler(ctx)
+		case apiPathHeader + "/user-book-relations/favorite":
+			userBookRelations.FavoriteBookHandler(ctx)
+		case apiPathHeader + "/user-book-relations/add-to-read-list":
+			userBookRelations.AddToReadListHandler(ctx)
+		case apiPathHeader + "/user-book-relations/set-as-read":
+			userBookRelations.SetAsReadHandler(ctx)
+
+		case apiPathHeader + "/reviews/get/book-reviews":
+			reviews.GetReviewsByBookIDHandler(ctx)
+		case apiPathHeader + "/reviews/get/book-reviews/detailed":
+			reviews.GetDetailedReviewsByBookIDHandler(ctx)
+		case apiPathHeader + "/reviews/create/book-review":
+			reviews.CreateBookReviewHandler(ctx)
+
+		case apiPathHeader + "/reviews/get/user-reviews":
+			reviews.GetReviewsByUserIDHandler(ctx)
+
+		case apiPathHeader + "/follows/follow-user":
+			follows.FollowUserHandler(ctx)
+
+		default:
+			log.Printf("Endpoint (%s) not found.", pth)
+		}
 	}
 }

@@ -39,20 +39,30 @@ func GetReviewByIDHandler(ctx *fasthttp.RequestCtx) {
 
 	if err != nil {
 		log.Printf("(Error): error converting review ID to int at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Error converting review ID to int"}},
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	review = crud.GetReviewByID(reviewID)
 	if review.ID == 0 {
 		log.Printf("(Error): review not found by ID at endpoint (%s).", string(pth))
-		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+			Status: response.ResponseMessage{Code: "3", Values: []string{"Review not found by ID"}},
+		}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
 		return
 	}
 
 	log.Printf("(Information): review retrieved successfully.")
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	if err := json.NewEncoder(ctx).Encode(review); err != nil {
+	if err := json.NewEncoder(ctx).Encode(response.ReviewsResp{
+		Status:  response.ResponseMessage{Code: "0", Values: nil},
+		Reviews: []crud.Review{review},
+	}); err != nil {
 		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
 	}
 }

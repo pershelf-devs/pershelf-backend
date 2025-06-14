@@ -1,6 +1,9 @@
 package response
 
-import "github.com/core-pershelf/rest/helperContact/tablesModels"
+import (
+	customizedmodels "github.com/core-pershelf/rest/helperContact/customizedModels"
+	"github.com/core-pershelf/rest/helperContact/tablesModels"
+)
 
 type ResponseMessage struct {
 	Code   string   `json:"code"`
@@ -25,6 +28,11 @@ type UserBooksResp struct {
 type ReviewsResp struct {
 	Status  ResponseMessage       `json:"status"`
 	Reviews []tablesModels.Review `json:"reviews"`
+}
+
+type DetailedReviewsResp struct {
+	Status          ResponseMessage                   `json:"status"`
+	DetailedReviews []customizedmodels.DetailedReview `json:"detailedReviews"`
 }
 
 type BooksResp struct {

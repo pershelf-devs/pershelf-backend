@@ -12,6 +12,8 @@ type UserBookRelation struct {
 	BookID    int       `gorm:"column:book_id;type:int(11);not null" json:"book_id"`
 	Like      bool      `gorm:"column:like;type:boolean;not null;default:false" json:"like"`
 	Favorite  bool      `gorm:"column:favorite;type:boolean;not null;default:false" json:"favorite"`
+	ReadList  bool      `gorm:"column:read_list;type:boolean;not null;default:false" json:"read_list"`
+	Read      bool      `gorm:"column:read;type:boolean;not null;default:false" json:"read"`
 	CreatedAt time.Time `gorm:"column:created_at;type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" json:"updated_at"`
 }

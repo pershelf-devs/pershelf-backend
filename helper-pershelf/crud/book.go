@@ -38,6 +38,16 @@ func GetAllBooks() []Book {
 	return books
 }
 
+// GetBooksByIDs retrieves books by IDs from the database
+func GetBooksByIDs(ids []int) []Book {
+	var books []Book
+	if err := globals.PershelfDB.Where("id IN (?)", ids).Find(&books).Error; err != nil {
+		globals.Log("Error getting books by IDs: ", err)
+		return nil
+	}
+	return books
+}
+
 // GetBookByID retrieves a book by ID from the database
 func GetBookByID(id int) Book {
 	var book Book

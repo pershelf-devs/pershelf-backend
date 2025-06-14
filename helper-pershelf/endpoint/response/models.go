@@ -1,6 +1,9 @@
 package response
 
-import "github.com/pershelf/pershelf/crud"
+import (
+	"github.com/pershelf/pershelf/crud"
+	"github.com/pershelf/pershelf/crud/customized"
+)
 
 type ResponseMessage struct {
 	Code   string   `json:"code"`
@@ -25,6 +28,11 @@ type UserBooksResp struct {
 type ReviewsResp struct {
 	Status  ResponseMessage `json:"status"`
 	Reviews []crud.Review   `json:"reviews"`
+}
+
+type DetailedReviewsResp struct {
+	Status          ResponseMessage             `json:"status"`
+	DetailedReviews []customized.DetailedReview `json:"detailedReviews"`
 }
 
 type BooksResp struct {

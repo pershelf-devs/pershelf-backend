@@ -48,17 +48,19 @@ func RunDBHttpServer(conf config2.ServerConfig) error {
 	router.POST(dbApiMainPath+"/user-books/delete/id/:id", handlers.DeleteUserBookHandler)              // delete user book entry by id
 
 	// review handlers (CRUD) => table : review
-	router.POST(dbApiMainPath+"/reviews/get/all", handlers.GetAllReviewsHandler)                   // get all reviews
-	router.POST(dbApiMainPath+"/reviews/get/id/:id", handlers.GetReviewByIDHandler)                // get review by id
-	router.POST(dbApiMainPath+"/reviews/get/user-id/:user-id", handlers.GetReviewsByUserIDHandler) // get reviews by user id
-	router.POST(dbApiMainPath+"/reviews/get/book-id/:book-id", handlers.GetReviewsByBookIDHandler) // get reviews by book id
-	router.POST(dbApiMainPath+"/reviews/create", handlers.CreateReviewHandler)                     // create review entry
-	router.POST(dbApiMainPath+"/reviews/update", handlers.UpdateReviewHandler)                     // update review entry
-	router.POST(dbApiMainPath+"/reviews/delete/id/:id", handlers.DeleteReviewHandler)              // delete review entry by id
+	router.POST(dbApiMainPath+"/reviews/get/all", handlers.GetAllReviewsHandler)                                            // get all reviews
+	router.POST(dbApiMainPath+"/reviews/get/id/:id", handlers.GetReviewByIDHandler)                                         // get review by id
+	router.POST(dbApiMainPath+"/reviews/get/detailed-reviews/book-id/:book-id", handlers.GetDetailedReviewsByBookIDHandler) // get detailed reviews by book id
+	router.POST(dbApiMainPath+"/reviews/get/user-id/:user-id", handlers.GetReviewsByUserIDHandler)                          // get reviews by user id
+	router.POST(dbApiMainPath+"/reviews/get/book-id/:book-id", handlers.GetReviewsByBookIDHandler)                          // get reviews by book id
+	router.POST(dbApiMainPath+"/reviews/create", handlers.CreateReviewHandler)                                              // create review entry
+	router.POST(dbApiMainPath+"/reviews/update", handlers.UpdateReviewHandler)                                              // update review entry
+	router.POST(dbApiMainPath+"/reviews/delete/id/:id", handlers.DeleteReviewHandler)                                       // delete review entry by id
 
 	// book handlers (CRUD) => table : book
 	router.POST(dbApiMainPath+"/books/get/all", handlers.GetAllBooksHandler)              // get all books
 	router.POST(dbApiMainPath+"/books/get/id/:id", handlers.GetBookByIDHandler)           // get book by id
+	router.POST(dbApiMainPath+"/books/get/ids", handlers.GetBooksByIDsHandler)            // get books by ids
 	router.POST(dbApiMainPath+"/books/get/isbn/:isbn", handlers.GetBookByISBNHandler)     // get book by ISBN
 	router.POST(dbApiMainPath+"/books/get/genre/:genre", handlers.GetBooksByGenreHandler) // get books by genre
 	router.POST(dbApiMainPath+"/books/create", handlers.CreateBookHandler)                // create book

@@ -33,6 +33,39 @@ func GetAllBooksHandler(ctx *fasthttp.RequestCtx) {
 	}
 }
 
+// GetBooksByIDsHandler retrieves books by IDs from the database.
+func GetBooksByIDsHandler(ctx *fasthttp.RequestCtx) {
+	var (
+		pth = ctx.Path()
+	)
+
+	var bookIDs []int
+	if err := json.Unmarshal(ctx.Request.Body(), &bookIDs); err != nil {
+		log.Printf("(Error): error unmarshalling request body at endpoint (%s): %v", pth, err)
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Error unmarshalling request body"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	books := crud.GetBooksByIDs(bookIDs)
+	if len(books) == 0 {
+		log.Printf("(Error): no books found with IDs at endpoint (%s).", string(pth))
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"No books found"}}); err != nil {
+			log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+		}
+		return
+	}
+
+	log.Printf("(Information): books retrieved successfully.")
+	if err := json.NewEncoder(ctx).Encode(response.BooksResp{
+		Status: response.ResponseMessage{Code: "0", Values: nil},
+		Books:  books,
+	}); err != nil {
+		log.Printf("(Error): error encoding response message at endpoint (%s).", string(pth))
+	}
+}
+
 // GetBookByIDHandler retrieves a book by ID from the database.
 func GetBookByIDHandler(ctx *fasthttp.RequestCtx) {
 	var (
