@@ -20,7 +20,7 @@ func IsAuthenticated(ctx *fasthttp.RequestCtx) bool {
 	if err != nil {
 		log.Printf("(Error): error verifying token at endpoint (%s).", pth)
 
-		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Error verifying token"}}); err != nil {
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "5", Values: []string{"Error verifying token: " + err.Error()}}); err != nil {
 			log.Printf("(Error): error encoding response message at endpoint (%s).", pth)
 		}
 		return false
@@ -28,8 +28,7 @@ func IsAuthenticated(ctx *fasthttp.RequestCtx) bool {
 
 	if !isValid {
 		log.Printf("(Error): invalid token at endpoint (%s).", pth)
-
-		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "3", Values: []string{"Invalid token"}}); err != nil {
+		if err := json.NewEncoder(ctx).Encode(response.ResponseMessage{Code: "5", Values: []string{"Invalid token: " + err.Error()}}); err != nil {
 			log.Printf("(Error): error encoding response message at endpoint (%s).", pth)
 		}
 		return false
